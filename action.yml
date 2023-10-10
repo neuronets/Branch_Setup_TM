@@ -27,6 +27,11 @@ outputs:
     value: ${{ steps.issue-parser.outputs.issueparser_model_info }}
   SAMPLEDATA:
     value: ${{ steps.get_data.outputs.sample_data }}
+  CONFIG:
+    value: ${{ steps.get_model_config.outputs.model_config }}
+  TESTCOMMAND:
+    value: ${{ steps.get_test_command.outputs.test_command }}
+
 
 
 runs:
@@ -70,22 +75,27 @@ runs:
       run: echo "path=${{ steps.issue-parser.outputs.issueparser_pathNew }}" >> $GITHUB_OUTPUT
 
     - name: Get the Weights
-      if: ${{ contains(steps.get_updates.outputs.updates, 'ModelWeights') }}
       shell: bash
       id: get_weights
       run: echo "weights=${{ steps.issue-parser.outputs.issueparser_weights }}" >> $GITHUB_OUTPUT
 
     - name: Get Sample Data
-      if: ${{ contains(steps.get_updates.outputs.updates, 'SampleDataset') }}
       shell: bash
       id: get_data
       run: echo "sample_data=${{ steps.issue-parser.outputs.issueparser_sample-data }}" >> $GITHUB_OUTPUT
-
-    # Get docker url
-    - name: Get Docker URL
-      # Only if Docker information is in the list updates
-      if: ${{ contains(steps.get_updates.outputs.updates, 'DockerInformation') }}
+      
+    - name: Get Test Command
       shell: bash
-      id: get_docker_url
+      id: get_test_command
+      run: echo "test_command=${{ steps.issue-parser.outputs.issueparser_testCommand }}" >> $GITHUB_OUTPUT
+
+    - name: Get Config
+      id: get_model_config
+      shell: bash
+      run: echo "model_config=${{ steps.issue-parser.outputs.issueparser_modelConfig }}" >> $GITHUB_OUTPUT
+        
+    - name: Get Docker URL
+      shell: bash
+      id: get_docker
       run: echo "docker_url=${{ steps.issue-parser.outputs.issueparser_docker }}" >> $GITHUB_OUTPUT
   
